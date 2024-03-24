@@ -1,0 +1,10 @@
+.header {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  background-color: var(--header-footer);
+  color: var(--title-header-footer);
+  padding: 0 1rem;
+  cursor: default;
+  justify-content: space-between;
+}

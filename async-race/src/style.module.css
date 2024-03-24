@@ -1,0 +1,13 @@
+:root {
+  --bg: #18181b;
+  --header-footer: #27272a;
+  --title-header-footer: #e7e5e4;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

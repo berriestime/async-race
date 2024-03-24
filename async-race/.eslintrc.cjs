@@ -19,5 +19,6 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     'max-lines-per-function': ['warn', 40],
+    'import/prefer-default-export': 'off',
   },
 };

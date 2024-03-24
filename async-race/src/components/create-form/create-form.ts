@@ -1,0 +1,36 @@
+import BaseComponent from '../../utils/base-component';
+import { FormButton } from '../form-button/form-button';
+
+class CreateForm extends BaseComponent {
+  carName: BaseComponent;
+
+  carColor: BaseComponent;
+
+  formButton: FormButton;
+
+  constructor({ parentNode }: { parentNode: BaseComponent }) {
+    super({ parentNode, tag: 'div', className: 'createForm' });
+
+    this.carName = new BaseComponent({ parentNode: this, tag: 'input', className: 'input' });
+    this.carColor = new BaseComponent({ parentNode: this, tag: 'input', className: 'input' });
+    this.carColor.setAttributes({ type: 'color' });
+    this.formButton = new FormButton({
+      parentNode: this,
+      onClick: this.handleCreateClick.bind(this),
+    });
+  }
+
+  getCarName() {
+    return this.carName.value;
+  }
+
+  getCarColor() {
+    return this.carColor.value;
+  }
+
+  handleCreateClick() {
+    console.log(this.getCarName(), this.getCarColor());
+  }
+}
+
+export { CreateForm };
