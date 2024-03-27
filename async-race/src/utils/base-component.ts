@@ -127,6 +127,14 @@ class BaseComponent<K extends keyof HTMLElementTagNameMap = keyof HTMLElementTag
     }
     throw new Error('Node is not an HTMLInputElement');
   }
+
+  setValue(value: string): void {
+    if (this.node instanceof HTMLInputElement) {
+      this.node.value = value;
+      return;
+    }
+    throw new Error('Node is not an HTMLInputElement');
+  }
 }
 
 export default BaseComponent;

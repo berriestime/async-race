@@ -4,6 +4,7 @@ import styles from './garage.module.css';
 import { Car } from '../car/car';
 import { DeleteButton } from '../delete-button/delete-button';
 import { globalEventPipe } from '../../utils/event-emitter';
+import { SelectButton } from '../select-car/select-car';
 
 class GarageContainer extends BaseComponent {
   cars: BaseComponent;
@@ -23,7 +24,10 @@ class GarageContainer extends BaseComponent {
   private async fetchCars() {
     const cars = await Api.getAllCars();
     this.renderCars(cars);
-    globalEventPipe.sub('createNewCar', () => {
+    globalEventPipe.sub('carCreated', () => {
+      this.fetchCars();
+    });
+    globalEventPipe.sub('carUpdated', () => {
       this.fetchCars();
     });
   }
@@ -35,11 +39,11 @@ class GarageContainer extends BaseComponent {
       carElement.addClass(styles.car);
       carElement.setContent(`${car.id} - ${car.name} - ${car.color}`);
       this.cars.append(carElement);
-      const selectCar = new BaseComponent({
+      const selectCar = new SelectButton({
         parentNode: carElement,
-        tag: 'button',
-        className: styles.selectCar,
-        content: 'Select',
+        onClick: () => {
+          globalEventPipe.pub('carSelected', car);
+        },
       });
       const removeCar = new DeleteButton({
         parentNode: carElement,

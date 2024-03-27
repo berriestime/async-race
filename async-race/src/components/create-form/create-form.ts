@@ -31,9 +31,11 @@ class CreateForm extends BaseComponent {
   }
 
   handleCreateClick() {
-    console.log(this.getCarName(), this.getCarColor());
-    CreateForm.createNewCar(this.getCarName(), this.getCarColor());
-    globalEventPipe.pub('createNewCar');
+    const name = this.getCarName();
+    const color = this.getCarColor();
+    CreateForm.createNewCar(name, color).then((newCar) => {
+      globalEventPipe.pub('carCreated', newCar);
+    });
   }
 
   static async createNewCar(name: string, color: string) {

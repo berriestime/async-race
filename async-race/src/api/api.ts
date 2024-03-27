@@ -17,6 +17,12 @@ const deleteCarSchema = z.object({
 
 const getAllCarsSchema = z.array(createCarSchema);
 
+const updateCarSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1),
+  color: z.string().startsWith('#'),
+});
+
 class Api {
   static BASE_URL = 'http://127.0.0.1:3000';
 
@@ -69,6 +75,22 @@ class Api {
       return getAllCarsSchema.parse(await response.json());
     } catch (error) {
       console.error('Error in getAllCars:', error);
+      throw error;
+    }
+  }
+
+  static async updateCar(data: z.infer<typeof updateCarSchema>) {
+    try {
+      const response = await fetch(`${this.BASE_URL}/garage/${data.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      return updateCarSchema.parse(await response.json());
+    } catch (error) {
+      console.error('Error in updateCar:', error);
       throw error;
     }
   }
