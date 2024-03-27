@@ -11,6 +11,12 @@ const createCarRequestSchema = z.object({
   color: z.string().startsWith('#'),
 });
 
+const deleteCarSchema = z.object({
+  id: z.number(),
+});
+
+const getAllCarsSchema = z.array(createCarSchema);
+
 class Api {
   static BASE_URL = 'http://127.0.0.1:3000';
 
@@ -35,19 +41,34 @@ class Api {
     }
   }
 
-  static async deleteCar(id: number) {
+  static async deleteCar(id: z.infer<typeof deleteCarSchema>) {
     try {
-      const response = await fetch(`${this.BASE_URL}/garage/${id}`, {
+      const response = await fetch(`${this.BASE_URL}/garage/${id.id}`, {
         method: 'DELETE',
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to delete car with id ${id}`);
+        throw new Error(`Failed to delete car with id ${id.id}`);
       }
 
       return await response.json();
     } catch (error) {
       console.error('Error in deleteCar:', error);
+      throw error;
+    }
+  }
+
+  static async getAllCars() {
+    try {
+      const response = await fetch(`${this.BASE_URL}/garage`);
+
+      if (!response.ok) {
+        throw new Error('Failed to get all cars');
+      }
+
+      return getAllCarsSchema.parse(await response.json());
+    } catch (error) {
+      console.error('Error in getAllCars:', error);
       throw error;
     }
   }

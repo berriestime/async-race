@@ -1,4 +1,6 @@
+import { Api } from '../../api/api';
 import BaseComponent from '../../utils/base-component';
+import { globalEventPipe } from '../../utils/event-emitter';
 import { FormButton } from '../form-button/form-button';
 
 class CreateForm extends BaseComponent {
@@ -30,6 +32,18 @@ class CreateForm extends BaseComponent {
 
   handleCreateClick() {
     console.log(this.getCarName(), this.getCarColor());
+    CreateForm.createNewCar(this.getCarName(), this.getCarColor());
+    globalEventPipe.pub('createNewCar');
+  }
+
+  static async createNewCar(name: string, color: string) {
+    try {
+      const newCarData = { name, color };
+      const newCar = await Api.createCar(newCarData);
+      console.log(newCar);
+    } catch (error) {
+      console.error('Error in createNewCar:', error);
+    }
   }
 }
 

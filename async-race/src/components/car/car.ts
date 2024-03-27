@@ -1,11 +1,10 @@
 import BaseComponent from '../../utils/base-component';
-import './car.module.css';
+import styles from './car.module.css';
 
-export default class Car extends BaseComponent {
-  constructor() {
-    super({
-      tag: 'div',
-      className: 'car',
-    });
+class Car extends BaseComponent {
+  constructor({ parentNode }: { parentNode: BaseComponent }) {
+    super({ tag: 'div', className: styles.car, parentNode });
   }
 }
+
+export { Car };
