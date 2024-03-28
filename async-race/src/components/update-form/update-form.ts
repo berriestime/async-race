@@ -37,8 +37,9 @@ class UpdateForm extends BaseComponent {
     }).then((car) => {
       globalEventPipe.pub('carUpdated', car);
       this.carName.setValue('');
-      this.carColor.setValue('');
+      this.carColor.setValue('#000000');
       this.selectedCarId = null;
+      console.log(car);
     });
   }
 
