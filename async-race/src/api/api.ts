@@ -64,15 +64,19 @@ class Api {
     }
   }
 
-  static async getAllCars() {
+  static async getAllCars(limit?: number) {
     try {
-      const response = await fetch(`${this.BASE_URL}/garage`);
+      const url = limit ? `${this.BASE_URL}/garage?_limit=${limit}` : `${this.BASE_URL}/garage`;
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error('Failed to get all cars');
       }
 
-      return getAllCarsSchema.parse(await response.json());
+      const totalCount = response.headers.get('X-Total-Count');
+      const cars = await getAllCarsSchema.parse(await response.json());
+
+      return { cars, totalCount };
     } catch (error) {
       console.error('Error in getAllCars:', error);
       throw error;

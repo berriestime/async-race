@@ -7,8 +7,16 @@ import { globalEventPipe } from '../../utils/event-emitter';
 class GarageContainer extends BaseComponent {
   garage: BaseComponent;
 
+  totalCarsCount: BaseComponent;
+
   constructor({ parentNode }: { parentNode: BaseComponent }) {
-    super({ parentNode, tag: 'div', className: styles.garage, content: 'Garage( )' });
+    super({ parentNode, tag: 'div', className: styles.garage });
+
+    this.totalCarsCount = new BaseComponent({
+      parentNode: this,
+      tag: 'div',
+      className: styles.totalCars,
+    });
 
     this.garage = new BaseComponent({
       parentNode: this,
@@ -20,17 +28,15 @@ class GarageContainer extends BaseComponent {
   }
 
   private async fetchCars() {
-    const cars = await Api.getAllCars();
-    this.renderCars(cars);
-    globalEventPipe.sub('carCreated', () => {
-      this.fetchCars();
-    });
-    globalEventPipe.sub('carUpdated', () => {
-      this.fetchCars();
-    });
-    globalEventPipe.sub('carsCreated', () => {
-      this.fetchCars();
-    });
+    try {
+      const { cars, totalCount } = await Api.getAllCars(10);
+
+      this.renderCars(cars);
+      this.renderTotalCarsCount(totalCount);
+      this.setupEventListeners();
+    } catch (error) {
+      console.error('Error fetching cars:', error);
+    }
   }
 
   private renderCars(cars: { id: number; name: string; color: string }[]) {
@@ -48,6 +54,22 @@ class GarageContainer extends BaseComponent {
         },
       });
       return { carElement };
+    });
+  }
+
+  private renderTotalCarsCount(totalCount: string | null) {
+    this.totalCarsCount.setContent(`Garage (${totalCount})`);
+  }
+
+  private setupEventListeners() {
+    globalEventPipe.sub('carCreated', () => {
+      this.fetchCars();
+    });
+    globalEventPipe.sub('carUpdated', () => {
+      this.fetchCars();
+    });
+    globalEventPipe.sub('carsCreated', () => {
+      this.fetchCars();
     });
   }
 }

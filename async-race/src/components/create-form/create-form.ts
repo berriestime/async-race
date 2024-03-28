@@ -42,7 +42,6 @@ class CreateForm extends BaseComponent {
     try {
       const newCarData = { name, color };
       const newCar = await Api.createCar(newCarData);
-      console.log(newCar);
     } catch (error) {
       console.error('Error in createNewCar:', error);
     }

@@ -39,7 +39,6 @@ class UpdateForm extends BaseComponent {
       this.carName.setValue('');
       this.carColor.setValue('#000000');
       this.selectedCarId = null;
-      console.log(car);
     });
   }
 
