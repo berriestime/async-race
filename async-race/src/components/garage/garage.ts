@@ -71,6 +71,9 @@ class GarageContainer extends BaseComponent {
     globalEventPipe.sub('carsCreated', () => {
       this.fetchCars();
     });
+    globalEventPipe.sub('carCleared', () => {
+      this.fetchCars();
+    });
   }
 }
 

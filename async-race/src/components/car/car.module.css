@@ -1,4 +1,5 @@
 .car {
   background-color: rgb(247, 246, 205);
   border-radius: 5px;
+  border: solid 2px rgb(131, 73, 255);
 }

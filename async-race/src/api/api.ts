@@ -98,6 +98,39 @@ class Api {
       throw error;
     }
   }
+
+  static async getAllCarIds() {
+    try {
+      const response = await fetch(`${this.BASE_URL}/garage`);
+
+      if (!response.ok) {
+        throw new Error('Failed to get car IDs');
+      }
+
+      const cars = await response.json();
+      const carIds = cars.map((car: any) => car.id);
+
+      return carIds;
+    } catch (error) {
+      console.error('Error in getAllCarIds:', error);
+      throw error;
+    }
+  }
+
+  static async deleteAllCars() {
+    try {
+      const carIds = await this.getAllCarIds();
+      await Promise.all(
+        carIds.map(async (id: number) => {
+          await this.deleteCar({ id });
+        }),
+      );
+      console.log('All cars deleted successfully');
+    } catch (error) {
+      console.error('Error deleting cars:', error);
+      throw error;
+    }
+  }
 }
 
 export { Api, createCarSchema, createCarRequestSchema };

@@ -41,7 +41,7 @@ class CreateForm extends BaseComponent {
   static async createNewCar(name: string, color: string) {
     try {
       const newCarData = { name, color };
-      const newCar = await Api.createCar(newCarData);
+      await Api.createCar(newCarData);
     } catch (error) {
       console.error('Error in createNewCar:', error);
     }
