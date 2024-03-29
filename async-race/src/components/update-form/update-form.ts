@@ -22,7 +22,7 @@ class UpdateForm extends BaseComponent {
       parentNode: this,
       onClick: this.handleUpdateClick.bind(this),
     });
-
+    this.formButton.setAttributes({ disabled: 'disabled' });
     globalEventPipe.sub('carSelected', this.handleCarSelected.bind(this));
   }
 
@@ -39,6 +39,7 @@ class UpdateForm extends BaseComponent {
       this.carName.setValue('');
       this.carColor.setValue('#000000');
       this.selectedCarId = null;
+      this.formButton.setAttributes({ disabled: 'disabled' });
     });
   }
 
@@ -46,6 +47,7 @@ class UpdateForm extends BaseComponent {
     this.selectedCarId = selectedCar.id;
     this.carName.setValue(selectedCar.name);
     this.carColor.setValue(selectedCar.color);
+    this.formButton.removeAttributes('disabled');
   }
 }
 

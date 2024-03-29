@@ -40,21 +40,21 @@ class ActionBar extends BaseComponent {
       content: 'Generate',
     });
 
-    reset.addListener('click', this.handleClearCarsClick.bind(this));
-    generate.addListener('click', this.handleGenerateClick.bind(this));
+    reset.addListener('click', ActionBar.handleClearCarsClick.bind(this));
+    generate.addListener('click', ActionBar.handleGenerateClick.bind(this));
   }
 
-  private async handleClearCarsClick() {
+  static async handleClearCarsClick() {
     await Api.deleteAllCars();
     globalEventPipe.pub('carCleared');
   }
 
-  private async handleGenerateClick() {
+  static async handleGenerateClick() {
     const promises: Promise<void>[] = [];
 
     for (let i = 0; i < 100; i += 1) {
-      const name = this.generateRandomCar();
-      const color = this.generateRandomColor();
+      const name = ActionBar.generateRandomCar();
+      const color = ActionBar.generateRandomColor();
 
       promises.push(CreateForm.createNewCar(name, color));
     }
@@ -63,7 +63,7 @@ class ActionBar extends BaseComponent {
     globalEventPipe.pub('carsCreated');
   }
 
-  private generateRandomCar(): string {
+  static generateRandomCar(): string {
     const cars: { [key: string]: string[] } = {
       Toyota: ['Corolla', 'Camry', 'RAV4'],
       Nissan: ['Altima', 'Maxima', 'Rogue'],
@@ -85,7 +85,7 @@ class ActionBar extends BaseComponent {
     return `${brand} ${model}`;
   }
 
-  private generateRandomColor(): string {
+  static generateRandomColor(): string {
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   }
 }

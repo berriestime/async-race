@@ -9,6 +9,8 @@ class GarageContainer extends BaseComponent {
 
   totalCarsCount: BaseComponent;
 
+  engineStatus: { [key: number]: 'started' | 'stopped' } = {};
+
   constructor({ parentNode }: { parentNode: BaseComponent }) {
     super({ parentNode, tag: 'div', className: styles.garage });
 
@@ -51,6 +53,24 @@ class GarageContainer extends BaseComponent {
         onDeleteClick: async () => {
           await Api.deleteCar({ id: car.id });
           this.fetchCars();
+        },
+        onStartClick: async () => {
+          try {
+            const engineData = await Api.controlEngine(car.id, 'started');
+            console.log(engineData);
+            const driveData = await Api.switchToDriveMode(car.id);
+            console.log(driveData);
+          } catch (error) {
+            console.error('Failed START:', error);
+          }
+        },
+        onStopClick: async () => {
+          try {
+            const engineData = await Api.controlEngine(car.id, 'stopped');
+            console.log(`${engineData} stopped`);
+          } catch (error) {
+            console.error('Failed STOP:', error);
+          }
         },
       });
       return { carElement };

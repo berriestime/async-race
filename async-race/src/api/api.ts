@@ -108,7 +108,7 @@ class Api {
       }
 
       const cars = await response.json();
-      const carIds = cars.map((car: any) => car.id);
+      const carIds = cars.map((car: { id: number }) => car.id);
 
       return carIds;
     } catch (error) {
@@ -128,6 +128,40 @@ class Api {
       console.log('All cars deleted successfully');
     } catch (error) {
       console.error('Error deleting cars:', error);
+      throw error;
+    }
+  }
+
+  static async controlEngine(id: number, status: 'started' | 'stopped') {
+    try {
+      const response = await fetch(`${this.BASE_URL}/engine?id=${id}&status=${status}`, {
+        method: 'PATCH',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to control engine for car with id ${id}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error in controlEngine:', error);
+      throw error;
+    }
+  }
+
+  static async switchToDriveMode(id: number) {
+    try {
+      const response = await fetch(`${this.BASE_URL}/engine?id=${id}&status=drive`, {
+        method: 'PATCH',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to switch to drive mode for car with id ${id}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error in switchToDriveMode:', error);
       throw error;
     }
   }

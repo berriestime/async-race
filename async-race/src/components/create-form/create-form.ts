@@ -35,6 +35,8 @@ class CreateForm extends BaseComponent {
     const color = this.getCarColor();
     CreateForm.createNewCar(name, color).then((newCar) => {
       globalEventPipe.pub('carCreated', newCar);
+      this.carName.setValue('');
+      this.carColor.setValue('#000000');
     });
   }
 
