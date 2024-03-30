@@ -41,7 +41,7 @@ class Car extends BaseComponent {
       tag: 'div',
       className: styles.description,
       parentNode: this,
-      content: `${car.id} ${car.name} ${car.color}`,
+      content: `${car.id} ${car.name}`,
     });
     const racetrack = new BaseComponent({
       tag: 'div',
@@ -53,6 +53,7 @@ class Car extends BaseComponent {
       className: styles.carModel,
       parentNode: racetrack,
     });
+    carModel.setAttributes({ style: `background-color: ${car.color}` });
     const localOnStopClick = () => {
       carModel.stopAnimations();
       onStopClick();
