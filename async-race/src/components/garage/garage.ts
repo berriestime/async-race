@@ -9,38 +9,93 @@ class GarageContainer extends BaseComponent {
 
   totalCarsCount: BaseComponent;
 
+  prevButton: BaseComponent;
+
+  nextButton: BaseComponent;
+
+  page: BaseComponent;
+
   engineStatus: { [key: number]: 'started' | 'stopped' } = {};
+
+  currentPage: number = 1;
 
   constructor({ parentNode }: { parentNode: BaseComponent }) {
     super({ parentNode, tag: 'div', className: styles.garage });
-
+    this.fetchCars(this.currentPage);
     this.totalCarsCount = new BaseComponent({
       parentNode: this,
       tag: 'div',
       className: styles.totalCars,
     });
-
+    this.page = new BaseComponent({
+      parentNode: this,
+      tag: 'div',
+      className: styles.page,
+      content: 'Page: ',
+    });
+    this.prevButton = new BaseComponent({
+      parentNode: this,
+      tag: 'button',
+      className: styles.prevButton,
+      content: 'Prev',
+    });
+    this.nextButton = new BaseComponent({
+      parentNode: this,
+      tag: 'button',
+      className: styles.nextButton,
+      content: 'Next',
+    });
     this.garage = new BaseComponent({
       parentNode: this,
       tag: 'div',
       className: styles.carsContainer,
     });
-
-    this.fetchCars();
+    this.addEventListeners();
+    this.prevButton.disable();
   }
 
-  private async fetchCars() {
+  addEventListeners() {
+    this.prevButton.addListener('click', () => {
+      if (this.currentPage > 1) {
+        this.currentPage -= 1;
+        this.fetchCars(this.currentPage);
+      }
+    });
+
+    this.nextButton.addListener('click', () => {
+      this.currentPage += 1;
+      this.fetchCars(this.currentPage);
+    });
+  }
+
+  private async fetchCars(page: number) {
     try {
-      const { cars, totalCount } = await Api.getAllCars(10);
+      const { cars, totalCount } = await Api.getAllCars(7, page);
 
       this.renderCars(cars);
       this.renderTotalCarsCount(totalCount);
+
+      this.page.setContent(`Page: ${page}`);
+
+      if (page === 1) {
+        this.prevButton.disable();
+      } else {
+        this.prevButton.enable();
+      }
+
+      if (totalCount && Math.ceil(Number(totalCount) / 7) <= page) {
+        this.nextButton.disable();
+      } else {
+        this.nextButton.enable();
+      }
+
       this.setupEventListeners();
     } catch (error) {
       console.error('Error fetching cars:', error);
     }
   }
 
+  // eslint-disable-next-line max-lines-per-function
   private renderCars(cars: { id: number; name: string; color: string }[]) {
     this.garage.clear();
     cars.forEach((car) => {
@@ -52,7 +107,11 @@ class GarageContainer extends BaseComponent {
         },
         onDeleteClick: async () => {
           await Api.deleteCar({ id: car.id });
-          this.fetchCars();
+          await this.fetchCars(this.currentPage);
+          if (!this.garage.countChildren() && this.currentPage > 1) {
+            this.currentPage -= 1;
+            this.fetchCars(this.currentPage);
+          }
         },
         onStartClick: async () => {
           try {
@@ -85,16 +144,18 @@ class GarageContainer extends BaseComponent {
 
   private setupEventListeners() {
     globalEventPipe.sub('carCreated', () => {
-      this.fetchCars();
+      this.fetchCars(this.currentPage);
     });
     globalEventPipe.sub('carUpdated', () => {
-      this.fetchCars();
+      this.fetchCars(this.currentPage);
     });
     globalEventPipe.sub('carsCreated', () => {
-      this.fetchCars();
+      this.currentPage = 1;
+      this.fetchCars(this.currentPage);
     });
     globalEventPipe.sub('carCleared', () => {
-      this.fetchCars();
+      this.currentPage = 1;
+      this.fetchCars(this.currentPage);
     });
   }
 }

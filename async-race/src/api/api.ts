@@ -64,9 +64,16 @@ class Api {
     }
   }
 
-  static async getAllCars(limit?: number) {
+  static async getAllCars(limit?: number, page?: number) {
     try {
-      const url = limit ? `${this.BASE_URL}/garage?_limit=${limit}` : `${this.BASE_URL}/garage`;
+      let url = `${this.BASE_URL}/garage?`;
+      if (limit) {
+        url += `_limit=${limit}`;
+      }
+      if (page) {
+        url += `&_page=${page}`;
+      }
+
       const response = await fetch(url);
 
       if (!response.ok) {
