@@ -135,6 +135,14 @@ class BaseComponent<K extends keyof HTMLElementTagNameMap = keyof HTMLElementTag
     }
     throw new Error('Node is not an HTMLInputElement');
   }
+
+  animate(keyframes: Keyframe[], options: KeyframeAnimationOptions): Animation {
+    return this.node.animate(keyframes, options);
+  }
+
+  stopAnimations(): void {
+    this.node.getAnimations().forEach((animation) => animation.cancel());
+  }
 }
 
 export default BaseComponent;

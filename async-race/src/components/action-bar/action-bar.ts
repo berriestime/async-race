@@ -27,11 +27,11 @@ class ActionBar extends BaseComponent {
       className: 'actionButton',
       content: 'Race',
     });
-    const reset = new BaseComponent({
+    const cleanGarage = new BaseComponent({
       parentNode: actionBar,
       tag: 'button',
       className: 'actionButton',
-      content: 'Reset',
+      content: 'Clean Garage',
     });
     const generate = new BaseComponent({
       parentNode: actionBar,
@@ -40,7 +40,7 @@ class ActionBar extends BaseComponent {
       content: 'Generate',
     });
 
-    reset.addListener('click', ActionBar.handleClearCarsClick.bind(this));
+    cleanGarage.addListener('click', ActionBar.handleClearCarsClick.bind(this));
     generate.addListener('click', ActionBar.handleGenerateClick.bind(this));
   }
 

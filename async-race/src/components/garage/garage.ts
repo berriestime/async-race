@@ -57,17 +57,18 @@ class GarageContainer extends BaseComponent {
         onStartClick: async () => {
           try {
             const engineData = await Api.controlEngine(car.id, 'started');
-            console.log(engineData);
+            const time = Math.round(engineData.distance / engineData.velocity);
+            globalEventPipe.pub('time', car.id, time);
             const driveData = await Api.switchToDriveMode(car.id);
             console.log(driveData);
-          } catch (error) {
-            console.error('Failed START:', error);
+          } catch (cause) {
+            const error = new Error('Click handler failed', { cause });
+            console.error(error);
           }
         },
         onStopClick: async () => {
           try {
-            const engineData = await Api.controlEngine(car.id, 'stopped');
-            console.log(`${engineData} stopped`);
+            await Api.controlEngine(car.id, 'stopped');
           } catch (error) {
             console.error('Failed STOP:', error);
           }

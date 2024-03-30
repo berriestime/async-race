@@ -156,12 +156,13 @@ class Api {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to switch to drive mode for car with id ${id}`);
+        throw new Error(`Fetch failed`);
       }
 
       return await response.json();
-    } catch (error) {
-      console.error('Error in switchToDriveMode:', error);
+    } catch (cause) {
+      const error = new Error(`Failed to switch to drive mode for car with id ${id}`, { cause });
+      console.error(error);
       throw error;
     }
   }
