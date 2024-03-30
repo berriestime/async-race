@@ -34,6 +34,7 @@ class Car extends BaseComponent {
     onStopClick: () => void;
   }) {
     super({ tag: 'div', className: styles.car, parentNode });
+    globalEventPipe.sub('break-engine', this.onCrash.bind(this));
     globalEventPipe.sub('time', this.onTimeUpdate.bind(this));
     const selectCar = new SelectButton({ parentNode: this, onClick: onSelectClick });
     const removeCar = new DeleteButton({ parentNode: this, onClick: onDeleteClick });
@@ -59,7 +60,12 @@ class Car extends BaseComponent {
       onStopClick();
     };
 
-    const startEngineButton = new StartButton({ parentNode: this, onClick: onStartClick });
+    const localOnStartClick = () => {
+      carModel.addClass(styles.carModelRun);
+      onStartClick();
+    };
+
+    const startEngineButton = new StartButton({ parentNode: this, onClick: localOnStartClick });
     const stopEngineButton = new StopButton({ parentNode: this, onClick: localOnStopClick });
     stopEngineButton.setAttributes({ disabled: 'disabled' });
     this.id = car.id;
@@ -80,10 +86,21 @@ class Car extends BaseComponent {
         iterations: 1,
       })
       .finished.then(() => {
+        this.carModel.removeClass(styles.carModelRun);
         this.startEngineButton.removeAttributes('disabled');
         this.stopEngineButton.setAttributes({ disabled: 'disabled' });
       })
       .catch(() => {});
+  }
+
+  onCrash(id: number) {
+    if (id !== this.id) {
+      return;
+    }
+    this.carModel.removeClass(styles.carModelRun);
+    this.stopEngineButton.setAttributes({ disabled: 'disabled' });
+    this.startEngineButton.removeAttributes('disabled');
+    this.carModel.pauseAnimations();
   }
 }
 

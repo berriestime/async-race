@@ -62,6 +62,7 @@ class GarageContainer extends BaseComponent {
             const driveData = await Api.switchToDriveMode(car.id);
             console.log(driveData);
           } catch (cause) {
+            globalEventPipe.pub('break-engine', car.id);
             const error = new Error('Click handler failed', { cause });
             console.error(error);
           }
