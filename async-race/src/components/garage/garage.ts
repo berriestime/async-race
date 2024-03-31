@@ -27,20 +27,24 @@ class GarageContainer extends BaseComponent {
       tag: 'div',
       className: styles.totalCars,
     });
-    this.page = new BaseComponent({
+    const controlContainer = new BaseComponent({
       parentNode: this,
       tag: 'div',
-      className: styles.page,
-      content: 'Page: ',
+      className: styles.controlContainer,
     });
     this.prevButton = new BaseComponent({
-      parentNode: this,
+      parentNode: controlContainer,
       tag: 'button',
       className: styles.prevButton,
       content: 'Prev',
     });
+    this.page = new BaseComponent({
+      parentNode: controlContainer,
+      tag: 'div',
+      className: styles.page,
+    });
     this.nextButton = new BaseComponent({
-      parentNode: this,
+      parentNode: controlContainer,
       tag: 'button',
       className: styles.nextButton,
       content: 'Next',
@@ -75,7 +79,7 @@ class GarageContainer extends BaseComponent {
       this.renderCars(cars);
       this.renderTotalCarsCount(totalCount);
 
-      this.page.setContent(`Page: ${page}`);
+      this.page.setContent(`${page}`);
 
       if (page === 1) {
         this.prevButton.disable();

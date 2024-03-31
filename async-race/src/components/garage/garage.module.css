@@ -16,3 +16,8 @@
 .removeCar {
   background-color: rgb(253, 71, 71);
 }
+
+.controlContainer {
+  display: flex;
+  gap: 1rem;
+}
