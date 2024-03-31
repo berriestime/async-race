@@ -24,6 +24,12 @@ class Car extends BaseComponent {
 
   stopEngineButton: StopButton | undefined;
 
+  events: Events;
+
+  localOnStopClick: () => void;
+
+  localOnStartClick: () => void;
+
   constructor({
     parentNode,
     car,
@@ -35,6 +41,17 @@ class Car extends BaseComponent {
   }) {
     super({ tag: 'div', className: styles.car, parentNode });
 
+    this.events = events;
+    this.localOnStopClick = () => {
+      this.carModel?.removeClass(styles.carCrashed);
+      this.carModel?.addClass(styles.carModel);
+      this.carModel?.stopAnimations();
+      this.events.onStopClick();
+    };
+    this.localOnStartClick = () => {
+      this.carModel?.addClass(styles.carModelRun);
+      this.events.onStartClick();
+    };
     this.subscribeToGlobalEvents();
     this.createUIElements(car, events);
   }
@@ -42,6 +59,8 @@ class Car extends BaseComponent {
   subscribeToGlobalEvents(): void {
     globalEventPipe.sub('break-engine', this.onCrash.bind(this));
     globalEventPipe.sub('time', this.onTimeUpdate.bind(this));
+    globalEventPipe.sub('race-start', this.localOnStartClick);
+    globalEventPipe.sub('race-reset', this.localOnStopClick);
   }
 
   createUIElements(car: CarType, events: Events): void {
@@ -49,12 +68,10 @@ class Car extends BaseComponent {
     const removeCar = new DeleteButton({ parentNode: this, onClick: events.onDeleteClick });
     const description = this.createDescription(car);
     const racetrack = this.createRaceTrack();
-    const carModel = this.createCarModel(racetrack, car);
-
-    this.createButtons(carModel, events);
+    this.createCarModel(racetrack, car);
+    this.createButtons();
 
     this.id = car.id;
-    this.carModel = carModel;
   }
 
   createDescription(car: CarType): BaseComponent {
@@ -74,29 +91,18 @@ class Car extends BaseComponent {
     });
   }
 
-  createCarModel(parentNode: BaseComponent, car: CarType): BaseComponent {
-    const carModel = new BaseComponent({
+  createCarModel(parentNode: BaseComponent, car: CarType) {
+    this.carModel = new BaseComponent({
       tag: 'div',
       className: styles.carModel,
       parentNode,
     });
-    carModel.setAttributes({ style: `background-color: ${car.color}` });
-    return carModel;
+    this.carModel.setAttributes({ style: `background-color: ${car.color}` });
   }
 
-  createButtons(carModel: BaseComponent, events: Events): void {
-    const localOnStopClick = () => {
-      carModel.stopAnimations();
-      events.onStopClick();
-    };
-
-    const localOnStartClick = () => {
-      carModel.addClass(styles.carModelRun);
-      events.onStartClick();
-    };
-
-    this.startEngineButton = new StartButton({ parentNode: this, onClick: localOnStartClick });
-    this.stopEngineButton = new StopButton({ parentNode: this, onClick: localOnStopClick });
+  createButtons(): void {
+    this.startEngineButton = new StartButton({ parentNode: this, onClick: this.localOnStartClick });
+    this.stopEngineButton = new StopButton({ parentNode: this, onClick: this.localOnStopClick });
 
     this.stopEngineButton.setAttributes({ disabled: 'disabled' });
   }
@@ -116,6 +122,7 @@ class Car extends BaseComponent {
         .animate([{ left: '0px' }, { left: 'calc(100% - 50px)' }], {
           duration: time,
           iterations: 1,
+          fill: 'forwards',
         })
         .finished.then(() => {
           carModel.removeClass(styles.carModelRun);
@@ -132,6 +139,7 @@ class Car extends BaseComponent {
     }
     if (this.stopEngineButton && this.startEngineButton && this.carModel) {
       this.carModel.removeClass(styles.carModelRun);
+      this.carModel.addClass(styles.carCrashed);
       this.stopEngineButton.setAttributes({ disabled: 'disabled' });
       this.startEngineButton.removeAttributes('disabled');
       this.carModel.pauseAnimations();

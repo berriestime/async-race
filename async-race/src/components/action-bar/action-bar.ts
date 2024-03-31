@@ -50,7 +50,10 @@ class ActionBar extends BaseComponent {
     cleanGarage.addListener('click', ActionBar.handleClearCarsClick.bind(this));
     generate.addListener('click', ActionBar.handleGenerateClick.bind(this));
     race.addListener('click', () => {
-      globalEventPipe.pub('raceStart');
+      globalEventPipe.pub('race-start');
+    });
+    reset.addListener('click', () => {
+      globalEventPipe.pub('race-reset');
     });
   }
 

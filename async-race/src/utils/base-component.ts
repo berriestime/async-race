@@ -145,7 +145,10 @@ class BaseComponent<K extends keyof HTMLElementTagNameMap = keyof HTMLElementTag
   }
 
   pauseAnimations(): void {
-    this.node.getAnimations().forEach((animation) => animation.pause());
+    this.node.getAnimations().forEach((animation) => {
+      if (animation instanceof CSSAnimation) return;
+      animation.pause();
+    });
   }
 
   disable(): void {

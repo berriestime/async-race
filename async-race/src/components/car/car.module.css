@@ -15,6 +15,10 @@
   animation: kotik 0.5s linear infinite;
 }
 
+.carCrashed {
+  animation: kotik-crashed 2s linear infinite;
+}
+
 .carModel {
   width: 50px;
   height: 50px;
@@ -49,5 +53,28 @@
   100% {
     background-image: url('../../assets/001_new.svg');
     mask-image: url('../../assets/001_new.mask.svg');
+  }
+}
+
+@keyframes kotik-crashed {
+  0% {
+    background-image: url('../../assets/001_crashed.svg');
+    mask-image: url('../../assets/001_crashed.mask.svg');
+  }
+  25% {
+    background-image: url('../../assets/002_crashed.svg');
+    mask-image: url('../../assets/002_crashed.mask.svg');
+  }
+  50% {
+    background-image: url('../../assets/003_crashed.svg');
+    mask-image: url('../../assets/003_crashed.mask.svg');
+  }
+  75% {
+    background-image: url('../../assets/004_crashed.svg');
+    mask-image: url('../../assets/004_crashed.mask.svg');
+  }
+  100% {
+    background-image: url('../../assets/001_crashed.svg');
+    mask-image: url('../../assets/001_crashed.mask.svg');
   }
 }
