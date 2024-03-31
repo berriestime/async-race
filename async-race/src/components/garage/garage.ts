@@ -102,36 +102,38 @@ class GarageContainer extends BaseComponent {
       const carElement = new Car({
         parentNode: this.garage,
         car,
-        onSelectClick: () => {
-          globalEventPipe.pub('carSelected', car);
-        },
-        onDeleteClick: async () => {
-          await Api.deleteCar({ id: car.id });
-          await this.fetchCars(this.currentPage);
-          if (!this.garage.countChildren() && this.currentPage > 1) {
-            this.currentPage -= 1;
-            this.fetchCars(this.currentPage);
-          }
-        },
-        onStartClick: async () => {
-          try {
-            const engineData = await Api.controlEngine(car.id, 'started');
-            const time = Math.round(engineData.distance / engineData.velocity);
-            globalEventPipe.pub('time', car.id, time);
-            const driveData = await Api.switchToDriveMode(car.id);
-            console.log(driveData);
-          } catch (cause) {
-            globalEventPipe.pub('break-engine', car.id);
-            const error = new Error('Click handler failed', { cause });
-            console.error(error);
-          }
-        },
-        onStopClick: async () => {
-          try {
-            await Api.controlEngine(car.id, 'stopped');
-          } catch (error) {
-            console.error('Failed STOP:', error);
-          }
+        events: {
+          onSelectClick: () => {
+            globalEventPipe.pub('carSelected', car);
+          },
+          onDeleteClick: async () => {
+            await Api.deleteCar({ id: car.id });
+            await this.fetchCars(this.currentPage);
+            if (!this.garage.countChildren() && this.currentPage > 1) {
+              this.currentPage -= 1;
+              this.fetchCars(this.currentPage);
+            }
+          },
+          onStartClick: async () => {
+            try {
+              const engineData = await Api.controlEngine(car.id, 'started');
+              const time = Math.round(engineData.distance / engineData.velocity);
+              globalEventPipe.pub('time', car.id, time);
+              const driveData = await Api.switchToDriveMode(car.id);
+              console.log(driveData);
+            } catch (cause) {
+              globalEventPipe.pub('break-engine', car.id);
+              const error = new Error('Click handler failed', { cause });
+              console.error(error);
+            }
+          },
+          onStopClick: async () => {
+            try {
+              await Api.controlEngine(car.id, 'stopped');
+            } catch (error) {
+              console.error('Failed STOP:', error);
+            }
+          },
         },
       });
       return { carElement };

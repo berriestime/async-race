@@ -8,99 +8,134 @@ import styles from './car.module.css';
 
 type CarType = { id: number; name: string; color: string };
 
+type Events = {
+  onSelectClick: () => void;
+  onDeleteClick: () => void;
+  onStartClick: () => void;
+  onStopClick: () => void;
+};
+
 class Car extends BaseComponent {
-  id: number;
+  id: number | undefined;
 
-  carModel: BaseComponent;
+  carModel: BaseComponent | undefined;
 
-  startEngineButton: StartButton;
+  startEngineButton: StartButton | undefined;
 
-  stopEngineButton: StopButton;
+  stopEngineButton: StopButton | undefined;
 
-  // eslint-disable-next-line max-lines-per-function
   constructor({
     parentNode,
     car,
-    onSelectClick,
-    onDeleteClick,
-    onStartClick,
-    onStopClick,
+    events,
   }: {
     parentNode: BaseComponent;
     car: CarType;
-    onSelectClick: () => void;
-    onDeleteClick: () => void;
-    onStartClick: () => void;
-    onStopClick: () => void;
+    events: Events;
   }) {
     super({ tag: 'div', className: styles.car, parentNode });
+
+    this.subscribeToGlobalEvents();
+    this.createUIElements(car, events);
+  }
+
+  subscribeToGlobalEvents(): void {
     globalEventPipe.sub('break-engine', this.onCrash.bind(this));
     globalEventPipe.sub('time', this.onTimeUpdate.bind(this));
-    const selectCar = new SelectButton({ parentNode: this, onClick: onSelectClick });
-    const removeCar = new DeleteButton({ parentNode: this, onClick: onDeleteClick });
-    const description = new BaseComponent({
+  }
+
+  createUIElements(car: CarType, events: Events): void {
+    const selectCar = new SelectButton({ parentNode: this, onClick: events.onSelectClick });
+    const removeCar = new DeleteButton({ parentNode: this, onClick: events.onDeleteClick });
+    const description = this.createDescription(car);
+    const racetrack = this.createRaceTrack();
+    const carModel = this.createCarModel(racetrack, car);
+
+    this.createButtons(carModel, events);
+
+    this.id = car.id;
+    this.carModel = carModel;
+  }
+
+  createDescription(car: CarType): BaseComponent {
+    return new BaseComponent({
       tag: 'div',
       className: styles.description,
       parentNode: this,
       content: `${car.id} ${car.name}`,
     });
-    const racetrack = new BaseComponent({
+  }
+
+  createRaceTrack(): BaseComponent {
+    return new BaseComponent({
       tag: 'div',
       className: styles.racetrack,
       parentNode: this,
     });
+  }
+
+  createCarModel(parentNode: BaseComponent, car: CarType): BaseComponent {
     const carModel = new BaseComponent({
       tag: 'div',
       className: styles.carModel,
-      parentNode: racetrack,
+      parentNode,
     });
     carModel.setAttributes({ style: `background-color: ${car.color}` });
+    return carModel;
+  }
+
+  createButtons(carModel: BaseComponent, events: Events): void {
     const localOnStopClick = () => {
       carModel.stopAnimations();
-      onStopClick();
+      events.onStopClick();
     };
 
     const localOnStartClick = () => {
       carModel.addClass(styles.carModelRun);
-      onStartClick();
+      events.onStartClick();
     };
 
-    const startEngineButton = new StartButton({ parentNode: this, onClick: localOnStartClick });
-    const stopEngineButton = new StopButton({ parentNode: this, onClick: localOnStopClick });
-    stopEngineButton.setAttributes({ disabled: 'disabled' });
-    this.id = car.id;
-    this.carModel = carModel;
-    this.startEngineButton = startEngineButton;
-    this.stopEngineButton = stopEngineButton;
+    this.startEngineButton = new StartButton({ parentNode: this, onClick: localOnStartClick });
+    this.stopEngineButton = new StopButton({ parentNode: this, onClick: localOnStopClick });
+
+    this.stopEngineButton.setAttributes({ disabled: 'disabled' });
   }
 
   onTimeUpdate(id: number, time: number) {
     if (id !== this.id) {
       return;
     }
-    this.stopEngineButton.removeAttributes('disabled');
-    this.startEngineButton.setAttributes({ disabled: 'disabled' });
-    this.carModel
-      .animate([{ left: '0px' }, { left: 'calc(100% - 50px)' }], {
-        duration: time,
-        iterations: 1,
-      })
-      .finished.then(() => {
-        this.carModel.removeClass(styles.carModelRun);
-        this.startEngineButton.removeAttributes('disabled');
-        this.stopEngineButton.setAttributes({ disabled: 'disabled' });
-      })
-      .catch(() => {});
+
+    if (this.stopEngineButton && this.startEngineButton && this.carModel) {
+      const { stopEngineButton, startEngineButton, carModel } = this;
+
+      stopEngineButton.removeAttributes('disabled');
+      startEngineButton.setAttributes({ disabled: 'disabled' });
+
+      carModel
+        .animate([{ left: '0px' }, { left: 'calc(100% - 50px)' }], {
+          duration: time,
+          iterations: 1,
+        })
+        .finished.then(() => {
+          carModel.removeClass(styles.carModelRun);
+          startEngineButton.removeAttributes('disabled');
+          stopEngineButton.setAttributes({ disabled: 'disabled' });
+        })
+        .catch(() => {});
+    }
   }
 
   onCrash(id: number) {
     if (id !== this.id) {
       return;
     }
-    this.carModel.removeClass(styles.carModelRun);
-    this.stopEngineButton.setAttributes({ disabled: 'disabled' });
-    this.startEngineButton.removeAttributes('disabled');
-    this.carModel.pauseAnimations();
+    if (this.stopEngineButton && this.startEngineButton && this.carModel) {
+      this.carModel.removeClass(styles.carModelRun);
+      this.stopEngineButton.setAttributes({ disabled: 'disabled' });
+      this.startEngineButton.removeAttributes('disabled');
+      this.carModel.pauseAnimations();
+    }
   }
 }
 
