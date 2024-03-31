@@ -5,7 +5,6 @@
 }
 
 .racetrack {
-  /* width: 100%; */
   height: 50px;
   border: 1px solid black;
   position: relative;
@@ -19,50 +18,36 @@
 .carModel {
   width: 50px;
   height: 50px;
-  /* background-color: red; */
   background: bottom center no-repeat;
   background-size: contain;
-  /* mask-image: url('../../assets/001.mask.svg'); */
   mask-size: contain;
   mask-position: bottom center;
   mask-repeat: no-repeat;
-  /* animation: slide 2s linear infinite; */
-  /* animation-duration: ; */
   position: absolute;
   left: 0;
-  /* top: 25px; */
-  background-image: url('../../assets/001.svg');
-  mask-image: url('../../assets/001.mask.svg');
+  background-image: url('../../assets/001_new.svg');
+  mask-image: url('../../assets/001_new.mask.svg');
 }
 
 @keyframes kotik {
   0% {
-    background-image: url('../../assets/001.svg');
-    mask-image: url('../../assets/001.mask.svg');
+    background-image: url('../../assets/001_new.svg');
+    mask-image: url('../../assets/001_new.mask.svg');
   }
   25% {
-    background-image: url('../../assets/002.svg');
-    mask-image: url('../../assets/002.mask.svg');
+    background-image: url('../../assets/002_new.svg');
+    mask-image: url('../../assets/002_new.mask.svg');
   }
   50% {
-    background-image: url('../../assets/003.svg');
-    mask-image: url('../../assets/003.mask.svg');
+    background-image: url('../../assets/003_new.svg');
+    mask-image: url('../../assets/003_new.mask.svg');
   }
   75% {
-    background-image: url('../../assets/004.svg');
-    mask-image: url('../../assets/004.mask.svg');
+    background-image: url('../../assets/004_new.svg');
+    mask-image: url('../../assets/004_new.mask.svg');
   }
   100% {
-    background-image: url('../../assets/001.svg');
-    mask-image: url('../../assets/001.mask.svg');
-  }
-}
-
-@keyframes slide {
-  0% {
-    left: 0;
-  }
-  100% {
-    left: calc(100% - 50px);
+    background-image: url('../../assets/001_new.svg');
+    mask-image: url('../../assets/001_new.mask.svg');
   }
 }
