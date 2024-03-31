@@ -65,8 +65,11 @@ class Car extends BaseComponent {
 
   createUIElements(car: CarType, events: Events): void {
     const selectCar = new SelectButton({ parentNode: this, onClick: events.onSelectClick });
+    selectCar.addClass(styles.selectButton);
     const removeCar = new DeleteButton({ parentNode: this, onClick: events.onDeleteClick });
+    removeCar.addClass(styles.removeButton);
     const description = this.createDescription(car);
+    description.addClass(styles.description);
     const racetrack = this.createRaceTrack();
     this.createCarModel(racetrack, car);
     this.createButtons();

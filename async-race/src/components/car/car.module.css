@@ -1,3 +1,15 @@
+.selectButton {
+  background-color: rgb(185, 213, 211);
+}
+
+.removeButton {
+  background-color: rgb(246, 122, 122);
+}
+
+.description {
+  background-color: rgb(255, 255, 255);
+}
+
 .car {
   background-color: rgb(247, 246, 205);
   border-radius: 5px;
