@@ -19,7 +19,6 @@ class WinnerCheck extends BaseComponent {
       if (this.raceStarted && !this.winnerId) {
         this.winnerId = id;
         this.time = time;
-        console.log(`Winner:', ${this.winnerId}, ${this.time}ms`);
         globalEventPipe.pub('race-winner', id, time);
       }
     });

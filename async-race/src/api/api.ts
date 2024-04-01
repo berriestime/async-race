@@ -37,24 +37,19 @@ class Api {
   static BASE_URL = 'http://127.0.0.1:3000';
 
   static async createCar(data: z.infer<typeof createCarRequestSchema>) {
-    try {
-      const response = await fetch(`${this.BASE_URL}/garage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+    const response = await fetch(`${this.BASE_URL}/garage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
 
-      if (!response.ok) {
-        throw new Error('Failed to create car');
-      }
-
-      return createCarSchema.parse(await response.json());
-    } catch (error) {
-      console.error('Error in createCar:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error('Failed to create car');
     }
+
+    return createCarSchema.parse(await response.json());
   }
 
   static async deleteCar(id: z.infer<typeof deleteCarSchema>) {
@@ -142,7 +137,6 @@ class Api {
           await this.deleteCar({ id });
         }),
       );
-      console.log('All cars deleted successfully');
     } catch (error) {
       console.error('Error deleting cars:', error);
       throw error;
@@ -183,7 +177,6 @@ class Api {
     } catch (cause) {
       if (cause instanceof DOMException) return null;
       const error = new Error(`Failed to switch to drive mode for car with id ${id}`, { cause });
-      console.error(error);
       throw error;
     }
   }
@@ -211,7 +204,6 @@ class Api {
       const error = new Error(`Failed to create winner for car with id ${id} with time ${time}`, {
         cause,
       });
-      console.error(error);
       throw error;
     }
   }
@@ -229,7 +221,6 @@ class Api {
       const error = new Error(`Failed to get winner for car with id ${id}`, {
         cause,
       });
-      console.error(error);
       throw error;
     }
   }
@@ -256,7 +247,6 @@ class Api {
       const error = new Error(`Failed to update winner for car with id ${id} with time ${time}`, {
         cause,
       });
-      console.error(error);
       throw error;
     }
   }
@@ -276,7 +266,6 @@ class Api {
       const error = new Error(`Failed to delete winner for car with id ${id}`, {
         cause,
       });
-      console.error(error);
       throw error;
     }
   }
@@ -296,7 +285,6 @@ class Api {
       return { winners: getWinnersSchema.parse(await response.json()), totalCount };
     } catch (cause) {
       const error = new Error(`Failed to get winners`, { cause });
-      console.error(error);
       throw error;
     }
   }
@@ -312,7 +300,6 @@ class Api {
       return carSchema.parse(await response.json());
     } catch (cause) {
       const error = new Error(`Failed to get car with id ${id}`, { cause });
-      console.error(error);
       throw error;
     }
   }

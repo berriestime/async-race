@@ -33,7 +33,7 @@ class WinnerModal extends BaseComponent {
       parentNode: this.backdrop,
       tag: 'div',
       className: styles.modalContainer,
-      content: `Winner: ${id} - Time: ${time / 1000}s ${name}`,
+      content: `Winner: ${name} - Time: ${time / 1000}s `,
     });
 
     this.backdrop.addListener('click', () => {
@@ -41,7 +41,7 @@ class WinnerModal extends BaseComponent {
     });
     setTimeout(() => {
       this.removes();
-    }, 2000);
+    }, 3000);
   }
 }
 
