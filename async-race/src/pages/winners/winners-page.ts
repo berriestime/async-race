@@ -7,8 +7,8 @@ class Winners extends BaseComponent {
 
   sortDirection: 'ASC' | 'DESC' = 'DESC';
 
-  constructor() {
-    super({ parentNode: document.body, tag: 'div', className: styles.pageContainer });
+  constructor(parentNode: BaseComponent) {
+    super({ parentNode, tag: 'div', className: styles.pageContainer });
     this.initWinners();
   }
 
@@ -79,6 +79,7 @@ class Winners extends BaseComponent {
     });
     timeHeader.addListener('click', this.getColumnClickHandler('time'));
 
+    // eslint-disable-next-line max-lines-per-function
     winners.forEach((winner) => {
       const winnerRow = new BaseComponent({
         parentNode: winnerContainer,
@@ -94,11 +95,16 @@ class Winners extends BaseComponent {
         tag: 'td',
         content: winner.name,
       });
-      const colorCell = new BaseComponent({
+      const catCell = new BaseComponent({
         parentNode: winnerRow,
         tag: 'td',
-        content: winner.color,
       });
+      const carModel = new BaseComponent({
+        parentNode: catCell,
+        tag: 'div',
+        className: styles.carModel,
+      });
+      carModel.style.backgroundColor = winner.color;
       const winsCell = new BaseComponent({
         parentNode: winnerRow,
         tag: 'td',
@@ -107,12 +113,13 @@ class Winners extends BaseComponent {
       const timeCell = new BaseComponent({
         parentNode: winnerRow,
         tag: 'td',
-        content: String(winner.time),
+        content: `${(winner.time / 1000).toFixed(2)} s`,
       });
+
       return {
         idCell,
         nameCell,
-        colorCell,
+        catCell,
         winsCell,
         timeCell,
       };
@@ -129,8 +136,8 @@ class Winners extends BaseComponent {
   }
 }
 
-const initWinners = () => {
-  const winners = new Winners();
+const initWinners = (parentNode: BaseComponent) => {
+  const winners = new Winners(parentNode);
   return { winners };
 };
 

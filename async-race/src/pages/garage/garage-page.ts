@@ -16,8 +16,8 @@ class Garage extends BaseComponent {
 
   actionBarContainer: BaseComponent;
 
-  constructor() {
-    super({ parentNode: document.body, tag: 'div', className: styles.pageContainer });
+  constructor(parentNode: BaseComponent) {
+    super({ parentNode, tag: 'div', className: styles.pageContainer });
     this.actionBarContainer = new BaseComponent({
       parentNode: this,
       tag: 'div',
@@ -33,8 +33,8 @@ class Garage extends BaseComponent {
   }
 }
 
-const initGarage = () => {
-  const garage = new Garage();
+const initGarage = (parentNode: BaseComponent) => {
+  const garage = new Garage(parentNode);
   return { garage };
 };
 

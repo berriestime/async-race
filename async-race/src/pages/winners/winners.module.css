@@ -1,0 +1,20 @@
+.pageContainer {
+  margin: 1rem auto;
+}
+
+.winnerContainer {
+  margin: 0 auto;
+}
+
+.carModel {
+  width: 50px;
+  height: 50px;
+  background: bottom center no-repeat;
+  background-size: contain;
+  mask-size: contain;
+  mask-position: bottom center;
+  mask-repeat: no-repeat;
+
+  background-image: url('../../assets/001_new.svg');
+  mask-image: url('../../assets/001_new.mask.svg');
+}

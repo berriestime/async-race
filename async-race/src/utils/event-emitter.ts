@@ -30,6 +30,13 @@ class EventPipe {
     delete this.eventHandlers[eventName];
   }
 
+  implode(filter: string[] = []) {
+    Object.keys(this.eventHandlers).forEach((key) => {
+      if (filter.includes(key)) return;
+      delete this.eventHandlers[key];
+    });
+  }
+
   pub(eventName: string): void;
   pub<T0>(eventName: string, arg0: T0): void;
   pub<T0, T1>(eventName: string, arg0: T0, arg1: T1): void;
