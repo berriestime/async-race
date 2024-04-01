@@ -21,6 +21,8 @@
   border: 1px solid black;
   position: relative;
   overflow: hidden;
+  background: url('../../assets/flag.png') right center no-repeat;
+  background-size: contain;
 }
 
 .carModelRun {
