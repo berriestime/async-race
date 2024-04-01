@@ -1,10 +1,12 @@
 import { z } from 'zod';
 
-const createCarSchema = z.object({
+const carSchema = z.object({
   id: z.number(),
   name: z.string().min(1),
   color: z.string().startsWith('#'),
 });
+
+const createCarSchema = carSchema;
 
 const createCarRequestSchema = z.object({
   name: z.string().min(1),
@@ -15,13 +17,21 @@ const deleteCarSchema = z.object({
   id: z.number(),
 });
 
-const getAllCarsSchema = z.array(createCarSchema);
+const getAllCarsSchema = z.array(carSchema);
 
 const updateCarSchema = z.object({
   id: z.number(),
   name: z.string().min(1),
   color: z.string().startsWith('#'),
 });
+
+const winnerSchema = z.object({
+  id: z.number(),
+  time: z.number(),
+  wins: z.number(),
+});
+
+const getWinnersSchema = z.array(winnerSchema);
 
 class Api {
   static BASE_URL = 'http://127.0.0.1:3000';
@@ -271,17 +281,35 @@ class Api {
     }
   }
 
-  static async getWinners() {
+  static async getWinners(sortKey = 'wins', sortDirection = 'DESC') {
     try {
-      const response = await fetch(`${this.BASE_URL}/winners`);
+      const response = await fetch(
+        `${this.BASE_URL}/winners?_sort=${sortKey}&_order=${sortDirection}`,
+      );
 
       if (!response.ok) {
         throw new Error(`Fetch failed`);
       }
 
-      return await response.json();
+      return getWinnersSchema.parse(await response.json());
     } catch (cause) {
       const error = new Error(`Failed to get winners`, { cause });
+      console.error(error);
+      throw error;
+    }
+  }
+
+  static async getCar(id: number) {
+    try {
+      const response = await fetch(`${this.BASE_URL}/garage/${id}`);
+
+      if (!response.ok) {
+        throw new Error(`Fetch failed`);
+      }
+
+      return carSchema.parse(await response.json());
+    } catch (cause) {
+      const error = new Error(`Failed to get car with id ${id}`, { cause });
       console.error(error);
       throw error;
     }
