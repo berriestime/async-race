@@ -168,6 +168,12 @@ class GarageContainer extends BaseComponent {
     this.winnerModal = new WinnerModal({ parentNode: this, id, time });
   }
 
+  static async assignWinner(id: number, time: number) {
+    const winner = await Api.getWinner(id).catch(() => {});
+    if (winner) await Api.updateWinner(id, winner.wins + 1, Math.min(winner.time, time));
+    else await Api.createWinner(id, time);
+  }
+
   private setupEventListeners() {
     globalEventPipe.sub('carCreated', () => {
       this.fetchCars(this.currentPage);
@@ -183,7 +189,8 @@ class GarageContainer extends BaseComponent {
       this.currentPage = 1;
       this.fetchCars(this.currentPage);
     });
-    globalEventPipe.sub('race-winner', (id: number, time: number) => {
+    globalEventPipe.sub('race-winner', async (id: number, time: number) => {
+      await GarageContainer.assignWinner(id, time);
       this.renderModal(id, time);
     });
   }

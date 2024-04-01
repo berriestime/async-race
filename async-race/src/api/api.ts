@@ -177,6 +177,79 @@ class Api {
       throw error;
     }
   }
+
+  static async createWinner(id: number, time: number) {
+    try {
+      const response = await fetch(`${this.BASE_URL}/winners`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+          wins: 1,
+          time,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Fetch failed`);
+      }
+
+      return await response.json();
+    } catch (cause) {
+      const error = new Error(`Failed to create winner for car with id ${id} with time ${time}`, {
+        cause,
+      });
+      console.error(error);
+      throw error;
+    }
+  }
+
+  static async getWinner(id: number) {
+    try {
+      const response = await fetch(`${this.BASE_URL}/winners/${id}`);
+
+      if (!response.ok) {
+        throw new Error(`Fetch failed`);
+      }
+
+      return await response.json();
+    } catch (cause) {
+      const error = new Error(`Failed to get winner for car with id ${id}`, {
+        cause,
+      });
+      console.error(error);
+      throw error;
+    }
+  }
+
+  static async updateWinner(id: number, wins: number, time: number) {
+    try {
+      const response = await fetch(`${this.BASE_URL}/winners/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          wins,
+          time,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Fetch failed`);
+      }
+
+      return await response.json();
+    } catch (cause) {
+      const error = new Error(`Failed to update winner for car with id ${id} with time ${time}`, {
+        cause,
+      });
+      console.error(error);
+      throw error;
+    }
+  }
 }
 
 export { Api, createCarSchema, createCarRequestSchema };
