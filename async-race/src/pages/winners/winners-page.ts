@@ -40,7 +40,7 @@ class Winners extends BaseComponent {
       this.sortDirection,
       this.page,
     );
-    this.totalCount = parseInt(totalCount);
+    this.totalCount = parseInt(totalCount ?? '0', 10);
     const cars = await Promise.all(rawWinners.map((winner) => Api.getCar(winner.id)));
     const winners = rawWinners.map((winner, index) => ({
       id: winner.id,
@@ -65,9 +65,9 @@ class Winners extends BaseComponent {
     const pageNumber = new BaseComponent({
       parentNode: this,
       tag: 'span',
-      className: styles.pageNumber,
       content: `Page ${this.page}/${Math.ceil(this.totalCount / 10)}. Total ${this.totalCount} winners`,
     });
+    pageNumber.addClass(styles.pageNumber);
 
     const rightButton = new BaseComponent({
       parentNode: this,
