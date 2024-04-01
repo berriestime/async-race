@@ -10,7 +10,7 @@ interface HTMLElementWithBaseComponent extends HTMLElement {
 }
 
 class BaseComponent<K extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap> {
-  protected node: HTMLElementTagNameMap[K];
+  public node: HTMLElementTagNameMap[K];
 
   unsubbers: Array<() => void> = [];
 
