@@ -270,6 +270,22 @@ class Api {
       throw error;
     }
   }
+
+  static async getWinners() {
+    try {
+      const response = await fetch(`${this.BASE_URL}/winners`);
+
+      if (!response.ok) {
+        throw new Error(`Fetch failed`);
+      }
+
+      return await response.json();
+    } catch (cause) {
+      const error = new Error(`Failed to get winners`, { cause });
+      console.error(error);
+      throw error;
+    }
+  }
 }
 
 export { Api, createCarSchema, createCarRequestSchema };
