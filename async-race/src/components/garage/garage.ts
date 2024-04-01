@@ -21,6 +21,10 @@ class GarageContainer extends BaseComponent {
 
   currentPage: number = 1;
 
+  winner: WinnerCheck;
+
+  winnerModal: WinnerModal | null = null;
+
   constructor({ parentNode }: { parentNode: BaseComponent }) {
     super({ parentNode, tag: 'div', className: styles.garage });
     this.fetchCars(this.currentPage);
@@ -58,7 +62,7 @@ class GarageContainer extends BaseComponent {
     });
     this.addEventListeners();
     this.prevButton.disable();
-    const winner = new WinnerCheck({ parentNode: this });
+    this.winner = new WinnerCheck({ parentNode: this });
   }
 
   addEventListeners() {
@@ -154,7 +158,7 @@ class GarageContainer extends BaseComponent {
   }
 
   private renderModal(id: number, time: number) {
-    const winnerModal = new WinnerModal({ parentNode: this, id: id, time: time });
+    this.winnerModal = new WinnerModal({ parentNode: this, id, time });
   }
 
   private setupEventListeners() {
