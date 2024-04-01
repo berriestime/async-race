@@ -122,6 +122,7 @@ class GarageContainer extends BaseComponent {
           },
           onDeleteClick: async () => {
             await Api.deleteCar({ id: car.id });
+            await Api.deleteWinner(car.id);
             await this.fetchCars(this.currentPage);
             if (!this.garage.countChildren() && this.currentPage > 1) {
               this.currentPage -= 1;
