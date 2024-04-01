@@ -3,6 +3,8 @@ import { Api } from '../../api/api';
 import styles from './garage.module.css';
 import { Car } from '../car/car';
 import { globalEventPipe } from '../../utils/event-emitter';
+import { WinnerCheck } from '../winner-check/winner-check';
+import { WinnerModal } from '../winner-modal/winner-modal';
 
 class GarageContainer extends BaseComponent {
   garage: BaseComponent;
@@ -56,6 +58,7 @@ class GarageContainer extends BaseComponent {
     });
     this.addEventListeners();
     this.prevButton.disable();
+    const winner = new WinnerCheck({ parentNode: this });
   }
 
   addEventListeners() {
@@ -102,6 +105,7 @@ class GarageContainer extends BaseComponent {
   // eslint-disable-next-line max-lines-per-function
   private renderCars(cars: { id: number; name: string; color: string }[]) {
     this.garage.clear();
+    // eslint-disable-next-line max-lines-per-function
     cars.forEach((car) => {
       const carElement = new Car({
         parentNode: this.garage,
@@ -124,6 +128,7 @@ class GarageContainer extends BaseComponent {
               const time = Math.round(engineData.distance / engineData.velocity);
               globalEventPipe.pub('time', car.id, time);
               const driveData = await Api.switchToDriveMode(car.id);
+              globalEventPipe.pub('race-finished', car.id, time);
               console.log(driveData);
             } catch (cause) {
               globalEventPipe.pub('break-engine', car.id);
@@ -148,6 +153,10 @@ class GarageContainer extends BaseComponent {
     this.totalCarsCount.setContent(`Garage (${totalCount})`);
   }
 
+  private renderModal(id: number, time: number) {
+    const winnerModal = new WinnerModal({ parentNode: this, id: id, time: time });
+  }
+
   private setupEventListeners() {
     globalEventPipe.sub('carCreated', () => {
       this.fetchCars(this.currentPage);
@@ -162,6 +171,9 @@ class GarageContainer extends BaseComponent {
     globalEventPipe.sub('carCleared', () => {
       this.currentPage = 1;
       this.fetchCars(this.currentPage);
+    });
+    globalEventPipe.sub('race-winner', (id: number, time: number) => {
+      this.renderModal(id, time);
     });
   }
 }

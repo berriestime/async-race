@@ -28,7 +28,8 @@
 }
 
 .carCrashed {
-  animation: kotik-crashed 2s linear infinite;
+  animation: kotik-crashed 2s linear 1;
+  animation-fill-mode: forwards;
 }
 
 .carModel {
@@ -46,7 +47,7 @@
 }
 
 @keyframes kotik {
-  0% {
+  from {
     background-image: url('../../assets/001_new.svg');
     mask-image: url('../../assets/001_new.mask.svg');
   }
@@ -62,7 +63,7 @@
     background-image: url('../../assets/004_new.svg');
     mask-image: url('../../assets/004_new.mask.svg');
   }
-  100% {
+  to {
     background-image: url('../../assets/001_new.svg');
     mask-image: url('../../assets/001_new.mask.svg');
   }
@@ -73,20 +74,16 @@
     background-image: url('../../assets/001_crashed.svg');
     mask-image: url('../../assets/001_crashed.mask.svg');
   }
-  25% {
+  33% {
     background-image: url('../../assets/002_crashed.svg');
     mask-image: url('../../assets/002_crashed.mask.svg');
   }
-  50% {
+  66% {
     background-image: url('../../assets/003_crashed.svg');
     mask-image: url('../../assets/003_crashed.mask.svg');
   }
-  75% {
+  100% {
     background-image: url('../../assets/004_crashed.svg');
     mask-image: url('../../assets/004_crashed.mask.svg');
-  }
-  100% {
-    background-image: url('../../assets/001_crashed.svg');
-    mask-image: url('../../assets/001_crashed.mask.svg');
   }
 }
