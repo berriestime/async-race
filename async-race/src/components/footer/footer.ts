@@ -18,4 +18,4 @@ const initFooter = () => {
   return footer;
 };
 
-export default initFooter;
+export { initFooter };
