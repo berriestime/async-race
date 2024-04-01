@@ -43,12 +43,15 @@ class Car extends BaseComponent {
 
     this.events = events;
     this.localOnStopClick = () => {
+      if (this.carModel) this.carModel.style.left = '0';
       this.carModel?.removeClass(styles.carCrashed);
+      this.carModel?.removeClass(styles.carModelRun);
       this.carModel?.addClass(styles.carModel);
       this.carModel?.stopAnimations();
       this.events.onStopClick();
     };
     this.localOnStartClick = () => {
+      this.localOnStopClick();
       this.carModel?.addClass(styles.carModelRun);
       this.events.onStartClick();
     };
@@ -121,13 +124,16 @@ class Car extends BaseComponent {
       stopEngineButton.removeAttributes('disabled');
       startEngineButton.setAttributes({ disabled: 'disabled' });
 
-      carModel
-        .animate([{ left: '0px' }, { left: 'calc(100% - 50px)' }], {
-          duration: time,
-          iterations: 1,
-          fill: 'forwards',
-        })
-        .finished.then(() => {
+      const engineAnimation = carModel.animate([{ left: '0px' }, { left: 'calc(100% - 50px)' }], {
+        duration: time,
+        iterations: 1,
+        fill: 'forwards',
+      });
+
+      engineAnimation.finished
+        .then(() => {
+          engineAnimation.commitStyles();
+          engineAnimation.cancel();
           carModel.removeClass(styles.carModelRun);
           startEngineButton.removeAttributes('disabled');
           stopEngineButton.setAttributes({ disabled: 'disabled' });

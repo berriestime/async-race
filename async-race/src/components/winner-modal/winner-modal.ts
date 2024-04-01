@@ -22,6 +22,10 @@ class WinnerModal extends BaseComponent {
       className: styles.modalContainer,
       content: `Winner: ${id} ${time}`,
     });
+
+    this.backdrop.addListener('click', () => {
+      this.removes();
+    });
   }
 }
 

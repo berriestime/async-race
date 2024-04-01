@@ -111,6 +111,8 @@ class GarageContainer extends BaseComponent {
     this.garage.clear();
     // eslint-disable-next-line max-lines-per-function
     cars.forEach((car) => {
+      let controller = new AbortController();
+      let { signal } = controller;
       const carElement = new Car({
         parentNode: this.garage,
         car,
@@ -127,11 +129,15 @@ class GarageContainer extends BaseComponent {
             }
           },
           onStartClick: async () => {
+            controller = new AbortController();
+            signal = controller.signal;
             try {
-              const engineData = await Api.controlEngine(car.id, 'started');
+              const engineData = await Api.controlEngine(car.id, 'started', signal);
+              if (!engineData) return;
               const time = Math.round(engineData.distance / engineData.velocity);
               globalEventPipe.pub('time', car.id, time);
-              const driveData = await Api.switchToDriveMode(car.id);
+              const driveData = await Api.switchToDriveMode(car.id, signal);
+              if (!driveData) return;
               globalEventPipe.pub('race-finished', car.id, time);
               console.log(driveData);
             } catch (cause) {
@@ -142,6 +148,7 @@ class GarageContainer extends BaseComponent {
           },
           onStopClick: async () => {
             try {
+              controller.abort('stop requrested');
               await Api.controlEngine(car.id, 'stopped');
             } catch (error) {
               console.error('Failed STOP:', error);

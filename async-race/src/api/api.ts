@@ -139,10 +139,11 @@ class Api {
     }
   }
 
-  static async controlEngine(id: number, status: 'started' | 'stopped') {
+  static async controlEngine(id: number, status: 'started' | 'stopped', signal?: AbortSignal) {
     try {
       const response = await fetch(`${this.BASE_URL}/engine?id=${id}&status=${status}`, {
         method: 'PATCH',
+        signal,
       });
 
       if (!response.ok) {
@@ -150,16 +151,18 @@ class Api {
       }
 
       return await response.json();
-    } catch (error) {
-      console.error('Error in controlEngine:', error);
-      throw error;
+    } catch (cause) {
+      if (cause instanceof DOMException) return null;
+      console.error('Error in controlEngine:', cause);
+      throw cause;
     }
   }
 
-  static async switchToDriveMode(id: number) {
+  static async switchToDriveMode(id: number, signal: AbortSignal) {
     try {
       const response = await fetch(`${this.BASE_URL}/engine?id=${id}&status=drive`, {
         method: 'PATCH',
+        signal,
       });
 
       if (!response.ok) {
@@ -168,6 +171,7 @@ class Api {
 
       return await response.json();
     } catch (cause) {
+      if (cause instanceof DOMException) return null;
       const error = new Error(`Failed to switch to drive mode for car with id ${id}`, { cause });
       console.error(error);
       throw error;

@@ -158,6 +158,10 @@ class BaseComponent<K extends keyof HTMLElementTagNameMap = keyof HTMLElementTag
   enable(): void {
     (this.node as HTMLButtonElement).disabled = false;
   }
+
+  getAnimation(id: string): Animation | undefined {
+    return this.node.getAnimations().find((animation) => animation.id === id);
+  }
 }
 
 export default BaseComponent;
