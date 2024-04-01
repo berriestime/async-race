@@ -60,10 +60,10 @@ class Car extends BaseComponent {
   }
 
   subscribeToGlobalEvents(): void {
-    globalEventPipe.sub('break-engine', this.onCrash.bind(this));
-    globalEventPipe.sub('time', this.onTimeUpdate.bind(this));
-    globalEventPipe.sub('race-start', this.localOnStartClick);
-    globalEventPipe.sub('race-reset', this.localOnStopClick);
+    this.unsubbers.push(globalEventPipe.sub('break-engine', this.onCrash.bind(this)));
+    this.unsubbers.push(globalEventPipe.sub('time', this.onTimeUpdate.bind(this)));
+    this.unsubbers.push(globalEventPipe.sub('race-start', this.localOnStartClick));
+    this.unsubbers.push(globalEventPipe.sub('race-reset', this.localOnStopClick));
   }
 
   createUIElements(car: CarType, events: Events): void {

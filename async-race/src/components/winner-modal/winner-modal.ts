@@ -10,9 +10,22 @@ class WinnerModal extends BaseComponent {
 
   time: number;
 
-  constructor({ parentNode, id, time }: { parentNode: BaseComponent; id: number; time: number }) {
+  name: string;
+
+  constructor({
+    parentNode,
+    id,
+    time,
+    name,
+  }: {
+    parentNode: BaseComponent;
+    id: number;
+    name: string;
+    time: number;
+  }) {
     super({ parentNode, tag: 'div' });
 
+    this.name = name;
     this.id = id;
     this.time = time;
     this.backdrop = new BaseComponent({ parentNode: this, tag: 'div', className: styles.backdrop });
@@ -20,12 +33,15 @@ class WinnerModal extends BaseComponent {
       parentNode: this.backdrop,
       tag: 'div',
       className: styles.modalContainer,
-      content: `Winner: ${id} ${time}`,
+      content: `Winner: ${id} - Time: ${time / 1000}s ${name}`,
     });
 
     this.backdrop.addListener('click', () => {
       this.removes();
     });
+    setTimeout(() => {
+      this.removes();
+    }, 2000);
   }
 }
 

@@ -5,8 +5,14 @@ interface BaseComponentOptions<K extends keyof HTMLElementTagNameMap> {
   content?: string;
 }
 
+interface HTMLElementWithBaseComponent extends HTMLElement {
+  component: BaseComponent;
+}
+
 class BaseComponent<K extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap> {
   protected node: HTMLElementTagNameMap[K];
+
+  unsubbers: Array<() => void> = [];
 
   constructor({ parentNode = null, tag, className = '', content = '' }: BaseComponentOptions<K>) {
     this.node = document.createElement(tag);
@@ -15,6 +21,11 @@ class BaseComponent<K extends keyof HTMLElementTagNameMap = keyof HTMLElementTag
     if (parentNode) {
       parentNode.append(this.node);
     }
+    (this.node as HTMLElementWithBaseComponent).component = this;
+  }
+
+  cleanup() {
+    this.unsubbers.forEach((unsub) => unsub());
   }
 
   removes(): void {

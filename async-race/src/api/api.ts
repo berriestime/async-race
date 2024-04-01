@@ -281,17 +281,19 @@ class Api {
     }
   }
 
-  static async getWinners(sortKey = 'wins', sortDirection = 'DESC') {
+  static async getWinners(sortKey = 'wins', sortDirection = 'DESC', page = 1, limit = 10) {
     try {
       const response = await fetch(
-        `${this.BASE_URL}/winners?_sort=${sortKey}&_order=${sortDirection}`,
+        `${this.BASE_URL}/winners?_sort=${sortKey}&_order=${sortDirection}&_page=${page}&_limit=${limit}`,
       );
 
       if (!response.ok) {
         throw new Error(`Fetch failed`);
       }
 
-      return getWinnersSchema.parse(await response.json());
+      const totalCount = response.headers.get('X-Total-Count');
+
+      return { winners: getWinnersSchema.parse(await response.json()), totalCount };
     } catch (cause) {
       const error = new Error(`Failed to get winners`, { cause });
       console.error(error);

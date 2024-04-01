@@ -7,6 +7,10 @@ class Winners extends BaseComponent {
 
   sortDirection: 'ASC' | 'DESC' = 'DESC';
 
+  page = 1;
+
+  totalCount = 0;
+
   constructor(parentNode: BaseComponent) {
     super({ parentNode, tag: 'div', className: styles.pageContainer });
     this.initWinners();
@@ -31,7 +35,12 @@ class Winners extends BaseComponent {
   // eslint-disable-next-line max-lines-per-function
   async initWinners() {
     this.clear();
-    const rawWinners = await Api.getWinners(this.sortKey, this.sortDirection);
+    const { winners: rawWinners, totalCount } = await Api.getWinners(
+      this.sortKey,
+      this.sortDirection,
+      this.page,
+    );
+    this.totalCount = parseInt(totalCount);
     const cars = await Promise.all(rawWinners.map((winner) => Api.getCar(winner.id)));
     const winners = rawWinners.map((winner, index) => ({
       id: winner.id,
@@ -40,6 +49,37 @@ class Winners extends BaseComponent {
       wins: winner.wins,
       time: winner.time,
     }));
+
+    const leftButton = new BaseComponent({
+      parentNode: this,
+      tag: 'button',
+      className: styles.leftButton,
+      content: '<',
+    });
+    leftButton.addListener('click', () => {
+      if (this.page <= 1) return;
+      this.page -= 1;
+      this.initWinners();
+    });
+
+    const pageNumber = new BaseComponent({
+      parentNode: this,
+      tag: 'span',
+      className: styles.pageNumber,
+      content: `Page ${this.page}/${Math.ceil(this.totalCount / 10)}. Total ${this.totalCount} winners`,
+    });
+
+    const rightButton = new BaseComponent({
+      parentNode: this,
+      tag: 'button',
+      className: styles.rightButton,
+      content: '>',
+    });
+    rightButton.addListener('click', () => {
+      if (this.page >= Math.ceil(this.totalCount / 10)) return;
+      this.page += 1;
+      this.initWinners();
+    });
 
     const winnerContainer = new BaseComponent({
       parentNode: this,

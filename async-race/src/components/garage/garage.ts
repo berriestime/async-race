@@ -25,6 +25,8 @@ class GarageContainer extends BaseComponent {
 
   winnerModal: WinnerModal | null = null;
 
+  mutationObserver: MutationObserver | null = null;
+
   constructor({ parentNode }: { parentNode: BaseComponent }) {
     super({ parentNode, tag: 'div', className: styles.garage });
     this.fetchCars(this.currentPage);
@@ -109,6 +111,16 @@ class GarageContainer extends BaseComponent {
   // eslint-disable-next-line max-lines-per-function
   private renderCars(cars: { id: number; name: string; color: string }[]) {
     this.garage.clear();
+    this.mutationObserver = new MutationObserver((records) => {
+      records.forEach((record) => {
+        record.removedNodes.forEach((node) => {
+          if (node instanceof HTMLElement && 'component' in node) {
+            (node as { component: BaseComponent }).component.cleanup();
+          }
+        });
+      });
+    });
+    this.mutationObserver.observe(this.garage.node, { childList: true });
     // eslint-disable-next-line max-lines-per-function
     cars.forEach((car) => {
       let controller = new AbortController();
@@ -165,8 +177,8 @@ class GarageContainer extends BaseComponent {
     this.totalCarsCount.setContent(`Garage (${totalCount})`);
   }
 
-  private renderModal(id: number, time: number) {
-    this.winnerModal = new WinnerModal({ parentNode: this, id, time });
+  private renderModal(id: number, time: number, name: string) {
+    this.winnerModal = new WinnerModal({ parentNode: this, id, name, time });
   }
 
   static async assignWinner(id: number, time: number) {
@@ -192,7 +204,8 @@ class GarageContainer extends BaseComponent {
     });
     globalEventPipe.sub('race-winner', async (id: number, time: number) => {
       await GarageContainer.assignWinner(id, time);
-      this.renderModal(id, time);
+      const car = await Api.getCar(id);
+      this.renderModal(id, time, car.name);
     });
   }
 }
