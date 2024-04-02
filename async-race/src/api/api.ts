@@ -201,10 +201,7 @@ class Api {
 
       return await response.json();
     } catch (cause) {
-      const error = new Error(`Failed to create winner for car with id ${id} with time ${time}`, {
-        cause,
-      });
-      throw error;
+      return null;
     }
   }
 
@@ -299,8 +296,7 @@ class Api {
 
       return carSchema.parse(await response.json());
     } catch (cause) {
-      const error = new Error(`Failed to get car with id ${id}`, { cause });
-      throw error;
+      return null;
     }
   }
 }
