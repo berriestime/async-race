@@ -6,19 +6,15 @@ class WinnerCheck extends BaseComponent {
 
   private winnerId: number | null = null;
 
-  private time = 0;
-
   constructor({ parentNode }: { parentNode: BaseComponent }) {
     super({ tag: 'div', className: 'winner-check', parentNode });
     globalEventPipe.sub('race-start', () => {
       this.raceStarted = true;
       this.winnerId = null;
-      this.time = 0;
     });
     globalEventPipe.sub('race-finished', (id: number, time: number) => {
       if (this.raceStarted && !this.winnerId) {
         this.winnerId = id;
-        this.time = time;
         globalEventPipe.pub('race-winner', id, time);
       }
     });
