@@ -133,12 +133,20 @@ class GarageContainer extends BaseComponent {
             globalEventPipe.pub('carSelected', car);
           },
           onDeleteClick: async () => {
-            await Api.deleteCar({ id: car.id });
-            await Api.deleteWinner(car.id);
-            await this.fetchCars(this.currentPage);
-            if (!this.garage.countChildren() && this.currentPage > 1) {
-              this.currentPage -= 1;
-              this.fetchCars(this.currentPage);
+            try {
+              await Api.deleteCar({ id: car.id });
+              try {
+                await Api.deleteWinner(car.id);
+              } catch {
+                // no action needed
+              }
+              await this.fetchCars(this.currentPage);
+              if (!this.garage.countChildren() && this.currentPage > 1) {
+                this.currentPage -= 1;
+                await this.fetchCars(this.currentPage);
+              }
+            } catch {
+              // no action needed
             }
           },
           onStartClick: async () => {
