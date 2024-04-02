@@ -40,14 +40,7 @@ class ActionBar extends BaseComponent {
       className: 'actionButton',
       content: 'Generate',
     });
-    const cleanGarage = new BaseComponent({
-      parentNode: actionBar,
-      tag: 'button',
-      className: 'actionButton',
-      content: 'Clean Garage',
-    });
 
-    cleanGarage.addListener('click', ActionBar.handleClearCarsClick.bind(this));
     generate.addListener('click', ActionBar.handleGenerateClick.bind(this));
     race.addListener('click', () => {
       globalEventPipe.pub('race-start');
