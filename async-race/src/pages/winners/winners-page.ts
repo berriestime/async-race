@@ -94,28 +94,33 @@ class Winners extends BaseComponent {
       parentNode: headerRow,
       tag: 'th',
       content: 'ID',
+      className: styles.idHeader,
     });
     idHeader.addListener('click', this.getColumnClickHandler('id'));
     const nameHeader = new BaseComponent({
       parentNode: headerRow,
       tag: 'th',
       content: 'Name',
+      className: styles.nameHeader,
     });
     const colorHeader = new BaseComponent({
       parentNode: headerRow,
       tag: 'th',
       content: 'Color',
+      className: styles.colorHeader,
     });
     const winsHeader = new BaseComponent({
       parentNode: headerRow,
       tag: 'th',
       content: 'Wins',
+      className: styles.winsHeader,
     });
     winsHeader.addListener('click', this.getColumnClickHandler('wins'));
     const timeHeader = new BaseComponent({
       parentNode: headerRow,
       tag: 'th',
       content: 'Time',
+      className: styles.timeHeader,
     });
     timeHeader.addListener('click', this.getColumnClickHandler('time'));
 

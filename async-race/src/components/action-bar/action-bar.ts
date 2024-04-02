@@ -2,6 +2,7 @@ import { Api } from '../../api/api';
 import BaseComponent from '../../utils/base-component';
 import { globalEventPipe } from '../../utils/event-emitter';
 import { CreateForm } from '../create-form/create-form';
+import styles from './action-bar.module.css';
 
 class ActionBar extends BaseComponent {
   garageContainer: BaseComponent;
@@ -25,19 +26,19 @@ class ActionBar extends BaseComponent {
     const race = new BaseComponent({
       parentNode: actionBar,
       tag: 'button',
-      className: 'actionButton',
+      className: styles.actionButton,
       content: 'Race',
     });
     const reset = new BaseComponent({
       parentNode: actionBar,
       tag: 'button',
-      className: 'actionButton',
+      className: styles.actionButton,
       content: 'Reset',
     });
     const generate = new BaseComponent({
       parentNode: actionBar,
       tag: 'button',
-      className: 'actionButton',
+      className: styles.actionButton,
       content: 'Generate',
     });
 

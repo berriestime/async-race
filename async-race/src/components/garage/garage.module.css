@@ -21,3 +21,8 @@
   display: flex;
   gap: 1rem;
 }
+
+.prevButton,
+.nextButton {
+  cursor: pointer;
+}

@@ -18,3 +18,16 @@
   background-image: url('../../assets/001_new.svg');
   mask-image: url('../../assets/001_new.mask.svg');
 }
+
+.rightButton,
+.leftButton,
+.idHeader,
+.winsHeader,
+.timeHeader {
+  cursor: pointer;
+}
+
+.nameHeader,
+.colorHeader {
+  cursor: default;
+}
