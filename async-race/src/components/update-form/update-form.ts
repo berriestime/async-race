@@ -37,6 +37,9 @@ class UpdateForm extends BaseComponent {
     if (!this.selectedCarId) {
       return;
     }
+    if (!this.carName.value.trim()) {
+      return;
+    }
     Api.updateCar({
       id: this.selectedCarId,
       name: this.carName.value,
