@@ -133,6 +133,7 @@ class GarageContainer extends BaseComponent {
             globalEventPipe.pub('carSelected', car);
           },
           onDeleteClick: async () => {
+            globalEventPipe.pub('carDeleted', car);
             try {
               await Api.deleteCar({ id: car.id });
               try {

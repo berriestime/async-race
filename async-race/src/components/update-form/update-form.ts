@@ -24,6 +24,13 @@ class UpdateForm extends BaseComponent {
     });
     this.formButton.setAttributes({ disabled: 'disabled' });
     globalEventPipe.sub('carSelected', this.handleCarSelected.bind(this));
+    globalEventPipe.sub('carDeleted', this.handleCarDeleted.bind(this));
+  }
+
+  handleCarDeleted(car: { id: number; name: string; color: string }) {
+    if (car.id === this.selectedCarId) {
+      this.cleanUp();
+    }
   }
 
   handleUpdateClick() {
@@ -36,11 +43,15 @@ class UpdateForm extends BaseComponent {
       color: this.carColor.value,
     }).then((car) => {
       globalEventPipe.pub('carUpdated', car);
-      this.carName.setValue('');
-      this.carColor.setValue('#000000');
-      this.selectedCarId = null;
-      this.formButton.setAttributes({ disabled: 'disabled' });
+      this.cleanUp();
     });
+  }
+
+  cleanUp() {
+    this.carName.setValue('');
+    this.carColor.setValue('#000000');
+    this.selectedCarId = null;
+    this.formButton.setAttributes({ disabled: 'disabled' });
   }
 
   handleCarSelected(selectedCar: { id: number; name: string; color: string }) {
